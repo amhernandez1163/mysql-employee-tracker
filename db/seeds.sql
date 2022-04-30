@@ -7,14 +7,14 @@ VALUES
 
 INSERT INTO role (title, salary, department_id)
 VALUES
-('Data Scientist', 100000, 1),
 ('AVP of Analytics', 130000, 1),
-('Junior Developer', 70000, 2),
+('Data Scientist', 100000, 1),
 ('Director of Dev Ops', 180000, 2),
-('Senior Sales Rep', 75000, 3),
+('Junior Developer', 70000, 2),
 ('Director of Sales', 200000, 3),
-('Marketing Specialist', 60000, 4),
-('AVP of Marketing', 130000, 4);
+('Senior Sales Rep', 75000, 3),
+('AVP of Marketing', 130000, 4),
+('Marketing Specialist', 60000, 4);
 
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
 VALUES

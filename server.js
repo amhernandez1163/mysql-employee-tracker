@@ -28,9 +28,9 @@ function promptMenu() {
         case "View All Roles":
           viewRoles();
           break;
-        // case "View All Employees":
-        //     viewEmployees();
-        //     break;
+        case "View All Employees":
+          viewEmployees();
+          break;
         // case "Add Department":
         //     addDepartment();
         //     break;
@@ -57,16 +57,37 @@ function viewDepartments() {
 }
 
 function viewRoles() {
-  db.query(`SELECT * FROM role;`, (err, results) => {
-    console.table(results);
-    promptMenu;
-  });
+  db.query(
+    `SELECT role.*, department.name
+    AS department_id
+    FROM role
+    LEFT JOIN department
+    ON role.department_id = department.id;`,
+    (err, results) => {
+      console.table(results);
+      promptMenu();
+    }
+  );
 }
 
-// function viewEmployees() {
-//     const sql = `SELECT * FROM employee`;
-
-//     db.query(sql)
-// }
+function viewEmployees() {
+  db.query(
+    `SELECT E.id, 
+    E.first_name, 
+    E.last_name,
+    R.title, 
+    D.name AS department, 
+    R.salary, 
+    CONCAT(M.first_name,' ',M.last_name) AS manager 
+    FROM employee E 
+    JOIN role R ON E.role_id = R.id 
+    JOIN department D ON R.department_id = D.id 
+    LEFT JOIN employee M ON E.manager_id = M.id;`,
+    (err, results) => {
+      console.table(results);
+      promptMenu();
+    }
+  );
+}
 
 promptMenu();
