@@ -1,3 +1,3 @@
-const mysql = require("mysql2");
+const db = require("./db/connection");
 var inquirer = require("inquirer");
 const cTable = require("console.table");
