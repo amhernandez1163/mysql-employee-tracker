@@ -1,6 +1,7 @@
 const db = require("./db/connection");
 var inquirer = require("inquirer");
 const cTable = require("console.table");
+const res = require("express/lib/response");
 
 function promptMenu() {
   inquirer
@@ -17,6 +18,7 @@ function promptMenu() {
           "Add a Role",
           "Add an Employee",
           "Update an Employee Role",
+          "Exit",
         ],
       },
     ])
@@ -40,9 +42,9 @@ function promptMenu() {
         case "Add an Employee":
           addEmployee();
           break;
-        // case "Update Employee Role":
-        //     udpateEmployee();
-        //     break;
+        case "Update an Employee Role":
+          updateEmployee();
+          break;
         default:
           process.exit();
       }
@@ -241,6 +243,65 @@ function addEmployee() {
           );
           console.log("This employee has been added successfully.");
           promptMenu();
+        });
+    });
+  });
+}
+
+function updateEmployee() {
+  db.query(`SELECT * FROM role;`, (err, results) => {
+    let availRolesArr = [];
+    if (err) {
+      console.log(err);
+    }
+    for (let i = 0; i < results.length; i++) {
+      availRolesArr.push({ name: results[i].title, value: results[i].id });
+    }
+
+    db.query(`SELECT * FROM employee;`, (err, results) => {
+      let availEmployeeArr = [];
+      if (err) {
+        console.log(err);
+      }
+      for (let i = 0; i < results.length; i++) {
+        availEmployeeArr.push({
+          name: results[i].first_name + " " + results[i].last_name,
+          value: results[i].role_id,
+        });
+      }
+
+      console.log(availRolesArr);
+      console.log(availEmployeeArr);
+
+      inquirer
+        .prompt([
+          {
+            type: "list",
+            name: "updatedEmployee",
+            message: "Select the employee you with to update:",
+            choices: availEmployeeArr,
+          },
+          {
+            type: "list",
+            name: "updatedRole",
+            message: "Select the employee's new role:",
+            choices: availRolesArr,
+          },
+        ])
+        .then((data) => {
+          db.query(
+            `UPDATE employee SET role_id = ?
+                  WHERE id = ?;`,
+            [data.updatedEmployee, data.updatedRole],
+            (err, results) => {
+              if (err) {
+                console.log(err);
+                return;
+              }
+              console.log("This employee has been updated successfully.");
+              promptMenu();
+            }
+          );
         });
     });
   });
