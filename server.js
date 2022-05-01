@@ -154,7 +154,7 @@ function addRole() {
         {
           type: "list",
           name: "roleDept",
-          message: "Enter the department this role belongs to:",
+          message: "Select the department this role belongs to:",
           choices: deptArr,
         },
       ])
@@ -168,7 +168,7 @@ function addRole() {
               console.log(err);
               return;
             }
-            console.log("This role has been added.");
+            console.log("This role has been added successfully.");
             promptMenu();
           }
         );
@@ -196,8 +196,52 @@ function addEmployee() {
           value: results[i].id,
         });
       }
-      console.log(roleArr);
-      console.log(employeeArr);
+
+      inquirer
+        .prompt([
+          {
+            type: "input",
+            name: "addFirstName",
+            message: "Enter the new employees first name:",
+          },
+          {
+            type: "input",
+            name: "addLastName",
+            message: "Enter the new employees last name:",
+          },
+          {
+            type: "list",
+            name: "newRole",
+            message: "Select the role this employee belongs to:",
+            choices: roleArr,
+          },
+          {
+            type: "list",
+            name: "newEManager",
+            message: "Who is this employees manager?",
+            choices: employeeArr,
+          },
+        ])
+        .then((data) => {
+          db.query(
+            `INSERT INTO employee (first_name, last_name, role_id, manager_id)
+          VALUES (?,?,?,?);`,
+            [
+              data.addFirstName,
+              data.addLastName,
+              data.newRole,
+              data.newEManager,
+            ],
+            (err, results) => {
+              if (err) {
+                console.log(err);
+                return;
+              }
+            }
+          );
+          console.log("This employee has been added successfully.");
+          promptMenu();
+        });
     });
   });
 }
