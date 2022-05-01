@@ -37,9 +37,9 @@ function promptMenu() {
         case "Add a Role":
           addRole();
           break;
-        // case "Add an Employee":
-        //     addEmployee();
-        //     break;
+        case "Add an Employee":
+          addEmployee();
+          break;
         // case "Update Employee Role":
         //     udpateEmployee();
         //     break;
@@ -129,51 +129,77 @@ function addDepartment() {
 }
 
 function addRole() {
-  //   let deptArr = [];
-  //   db.query(`SELECT * FROM department;`, (err, results) => {
-  //     if (err) {
-  //       console.log(err);
-  //     }
-  //     for (let i = 0; i < results.length; i++) {
-  //       deptArr.push({ name: results[i].name, value: results[i].id });
-  //     }
-  //   });
+  db.query(`SELECT * FROM department;`, (err, results) => {
+    let deptArr = [];
+    if (err) {
+      console.log(err);
+    }
+    for (let i = 0; i < results.length; i++) {
+      deptArr.push({ name: results[i].name, value: results[i].id });
+    }
 
-  inquirer
-    .prompt([
-      {
-        type: "input",
-        name: "roleTitle",
-        message: "Enter the title of this role:",
-      },
-      {
-        type: "input",
-        name: "roleSalary",
-        message:
-          "Enter the salary of this role (numbers only - no commas or dollar signs):",
-      },
-      {
-        type: "input",
-        name: "roleDept",
-        message: "Enter the department this role belongs to:",
-        // choices: deptArr,
-      },
-    ])
-    .then((data) => {
-      db.query(
-        `INSERT INTO role (title, salary, department_id) 
-        VALUES (?,?,?);`,
-        [data.roleTitle, data.roleSalary, data.roleDept],
-        (err, results) => {
-          if (err) {
-            console.log(err);
-            return;
+    inquirer
+      .prompt([
+        {
+          type: "input",
+          name: "roleTitle",
+          message: "Enter the title of this role:",
+        },
+        {
+          type: "input",
+          name: "roleSalary",
+          message:
+            "Enter the salary of this role (numbers only - no commas or dollar signs):",
+        },
+        {
+          type: "list",
+          name: "roleDept",
+          message: "Enter the department this role belongs to:",
+          choices: deptArr,
+        },
+      ])
+      .then((data) => {
+        db.query(
+          `INSERT INTO role (title, salary, department_id) 
+          VALUES (?,?,?);`,
+          [data.roleTitle, data.roleSalary, data.roleDept],
+          (err, results) => {
+            if (err) {
+              console.log(err);
+              return;
+            }
+            console.log("This role has been added.");
+            promptMenu();
           }
-          console.log("This role has been added.");
-          promptMenu();
-        }
-      );
+        );
+      });
+  });
+}
+
+function addEmployee() {
+  db.query(`SELECT * FROM role;`, (err, results) => {
+    let roleArr = [];
+    if (err) {
+      console.log(err);
+    }
+    for (let i = 0; i < results.length; i++) {
+      roleArr.push({ name: results[i].title, value: results[i].id });
+    }
+    db.query(`SELECT * FROM employee`, (err, results) => {
+      let employeeArr = [];
+      if (err) {
+        console.log(err);
+      }
+      for (let i = 0; i < results.length; i++) {
+        employeeArr.push({
+          name: results[i].first_name + " " + results[i].last_name,
+          value: results[i].id,
+        });
+      }
+      console.log(roleArr);
+      console.log(employeeArr);
     });
+  });
 }
 
 promptMenu();
