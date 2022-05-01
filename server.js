@@ -15,7 +15,7 @@ function promptMenu() {
           "View All Employees",
           "Add a Department",
           "Add a Role",
-          "Add Employee",
+          "Add an Employee",
           "Update an Employee Role",
         ],
       },
@@ -31,13 +31,13 @@ function promptMenu() {
         case "View All Employees":
           viewEmployees();
           break;
-        // case "Add Department":
-        //     addDepartment();
-        //     break;
-        // case "Add Role":
-        //     addRole();
-        //     break;
-        // case "Add Employee":
+        case "Add a Department":
+          addDepartment();
+          break;
+        case "Add a Role":
+          addRole();
+          break;
+        // case "Add an Employee":
         //     addEmployee();
         //     break;
         // case "Update Employee Role":
@@ -51,6 +51,10 @@ function promptMenu() {
 
 function viewDepartments() {
   db.query(`SELECT * FROM department;`, (err, results) => {
+    if (err) {
+      console.log(err);
+      return;
+    }
     console.table(results);
     promptMenu();
   });
@@ -64,6 +68,10 @@ function viewRoles() {
     LEFT JOIN department
     ON role.department_id = department.id;`,
     (err, results) => {
+      if (err) {
+        console.log(err);
+        return;
+      }
       console.table(results);
       promptMenu();
     }
@@ -84,10 +92,88 @@ function viewEmployees() {
     JOIN department D ON R.department_id = D.id 
     LEFT JOIN employee M ON E.manager_id = M.id;`,
     (err, results) => {
+      if (err) {
+        console.log(err);
+        return;
+      }
       console.table(results);
       promptMenu();
     }
   );
+}
+
+function addDepartment() {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "addDept",
+        message: "Enter the name of the department you'd like to add:",
+      },
+    ])
+    .then((data) => {
+      db.query(
+        `INSERT INTO department (name)
+            VALUES (?)`,
+        [data.addDept],
+        (err, results) => {
+          if (err) {
+            console.log(err);
+            return;
+          }
+          console.log("This department has been added.");
+          promptMenu();
+        }
+      );
+    });
+}
+
+function addRole() {
+  //   let deptArr = [];
+  //   db.query(`SELECT * FROM department;`, (err, results) => {
+  //     if (err) {
+  //       console.log(err);
+  //     }
+  //     for (let i = 0; i < results.length; i++) {
+  //       deptArr.push({ name: results[i].name, value: results[i].id });
+  //     }
+  //   });
+
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "roleTitle",
+        message: "Enter the title of this role:",
+      },
+      {
+        type: "input",
+        name: "roleSalary",
+        message:
+          "Enter the salary of this role (numbers only - no commas or dollar signs):",
+      },
+      {
+        type: "input",
+        name: "roleDept",
+        message: "Enter the department this role belongs to:",
+        // choices: deptArr,
+      },
+    ])
+    .then((data) => {
+      db.query(
+        `INSERT INTO role (title, salary, department_id) 
+        VALUES (?,?,?);`,
+        [data.roleTitle, data.roleSalary, data.roleDept],
+        (err, results) => {
+          if (err) {
+            console.log(err);
+            return;
+          }
+          console.log("This role has been added.");
+          promptMenu();
+        }
+      );
+    });
 }
 
 promptMenu();
