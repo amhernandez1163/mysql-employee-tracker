@@ -21,4 +21,6 @@ THEN I am prompted to select an employee to update and their new role and this i
 This assignment had zero starter code, so all was completed by me in VS Code and saved in GitHub. This project used Inquirer, mySQL2, mySQL, Node.js, and the console.table package.
 
 You can find my repo code here: https://github.com/amhernandez1163/mysql-employee-tracker
-The YouTube DEMO can be found here: (resolution goes up to 720p - please adjust for quality)
+The YouTube DEMO can be found here: https://youtu.be/D8RtM0VqfTw (resolution goes up to 720p - please adjust for quality)
+
+![Screenshot of Console Table](./assests/images/Screenshot_of_partial_console.jpg)

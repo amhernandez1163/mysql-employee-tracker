@@ -277,9 +277,6 @@ function updateEmployee() {
         });
       }
 
-      console.log(availRolesArr);
-      console.log(availEmployeeArr);
-
       inquirer
         .prompt([
           {
@@ -305,8 +302,6 @@ function updateEmployee() {
                 console.log(err);
                 return;
               }
-              console.log(availRolesArr);
-              console.log(availEmployeeArr);
               console.log("This employee has been updated successfully.");
               promptMenu();
             }
