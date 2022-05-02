@@ -2,7 +2,6 @@
 const db = require("./db/connection");
 var inquirer = require("inquirer");
 const cTable = require("console.table");
-const res = require("express/lib/response");
 
 // upon entering Node server.js - the following options prompt
 function promptMenu() {
@@ -306,6 +305,8 @@ function updateEmployee() {
                 console.log(err);
                 return;
               }
+              console.log(availRolesArr);
+              console.log(availEmployeeArr);
               console.log("This employee has been updated successfully.");
               promptMenu();
             }
