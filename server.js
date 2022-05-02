@@ -1,8 +1,10 @@
+// dependencies required for app to run
 const db = require("./db/connection");
 var inquirer = require("inquirer");
 const cTable = require("console.table");
 const res = require("express/lib/response");
 
+// upon entering Node server.js - the following options prompt
 function promptMenu() {
   inquirer
     .prompt([
@@ -51,6 +53,7 @@ function promptMenu() {
     });
 }
 
+// runs when user selects View All Departments
 function viewDepartments() {
   db.query(`SELECT * FROM department;`, (err, results) => {
     if (err) {
@@ -62,6 +65,7 @@ function viewDepartments() {
   });
 }
 
+// runs when user selects View All Roles
 function viewRoles() {
   db.query(
     `SELECT role.*, department.name
@@ -80,6 +84,7 @@ function viewRoles() {
   );
 }
 
+// runs when user selects View All Employees
 function viewEmployees() {
   db.query(
     `SELECT E.id, 
@@ -104,6 +109,7 @@ function viewEmployees() {
   );
 }
 
+// runs when user selects Add a Department
 function addDepartment() {
   inquirer
     .prompt([
@@ -178,6 +184,7 @@ function addRole() {
   });
 }
 
+// prompts when user selects Add an Employee
 function addEmployee() {
   db.query(`SELECT * FROM role;`, (err, results) => {
     let roleArr = [];
@@ -248,6 +255,7 @@ function addEmployee() {
   });
 }
 
+// runs when user slects Update an Employee Role
 function updateEmployee() {
   db.query(`SELECT * FROM role;`, (err, results) => {
     let availRolesArr = [];
@@ -292,7 +300,7 @@ function updateEmployee() {
           db.query(
             `UPDATE employee SET role_id = ?
                   WHERE id = ?;`,
-            [data.updatedEmployee, data.updatedRole],
+            [data.updatedRole, data.updatedEmployee],
             (err, results) => {
               if (err) {
                 console.log(err);
@@ -307,4 +315,5 @@ function updateEmployee() {
   });
 }
 
+// Makes the menu run for user - tied to line 8
 promptMenu();
